@@ -424,3 +424,29 @@ img {
   background-color: #374151;
   border-radius: 3px;
 }
+
+@page thermal {
+  size: 72mm auto;
+  margin: 0;
+}
+
+/* For thermal print preview wrapper */
+.thermal-print-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+/* ===== LIGHT THEME ===== */
+.light-theme {
+  --color-bg: var(--color-light);
+  --color-card: white;
+  --color-text: var(--color-text-dark);
+}
+
+.light-theme body {
+  background-color: var(--color-light);
+  color: var(--color-text-dark);
+}

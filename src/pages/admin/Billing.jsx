@@ -1,12 +1,13 @@
 // frontend/src/pages/admin/Billing.jsx
 import { useState, useEffect, useRef } from 'react';
-import { Download, Share2, Printer, CheckCircle } from 'lucide-react';
+import { Download, Share2, Printer, CheckCircle, FileText } from 'lucide-react';
 import { billService } from '../../services/billService.js';
 import { settingsService } from '../../services/settingsService.js';
 import { useToast } from '../../hooks/useToast.js';
-import { downloadInvoicePDF, shareInvoicePDF, openPrintWindow } from '../../utils/pdfGenerator.js';
+import { openThermalPrint, printThermalDirect, downloadReceiptText } from '../../utils/thermalPrint.js';
+import { shareInvoicePDF } from '../../utils/pdfGenerator.js';
 import POSLayout from '../../components/admin/billing/POSLayout.jsx';
-import InvoicePrint from '../../components/admin/billing/InvoicePrint.jsx';
+import ThermalInvoice from '../../components/admin/billing/ThermalInvoice.jsx';
 import Modal from '../../components/common/Modal.jsx';
 import Button from '../../components/common/Button.jsx';
 
@@ -38,39 +39,54 @@ const Billing = () => {
     footerText: settings?.invoiceSettings?.footerText || 'Thank you for dining with us!'
   });
 
+  // Thermal print - opens in new window optimized for 80mm printer
   const handlePrint = () => {
     if (generatedBill) {
-      const success = openPrintWindow(generatedBill, getRestaurantInfo());
+      const success = openThermalPrint(generatedBill, getRestaurantInfo());
       if (success) {
         billService.markAsPrinted(generatedBill._id).catch(console.error);
+        showSuccess('Print window opened');
       } else {
-        showError('Failed to open print window');
+        showError('Failed to open print window. Please allow popups.');
       }
     }
   };
 
-  const handleDownloadPDF = () => {
+  // Direct print (no preview)
+  const handleDirectPrint = async () => {
     if (generatedBill) {
-      const success = downloadInvoicePDF(generatedBill, getRestaurantInfo());
-      if (success) {
-        showSuccess('Invoice downloaded successfully');
-      } else {
-        showError('Failed to download invoice');
+      try {
+        await printThermalDirect(generatedBill, getRestaurantInfo());
+        billService.markAsPrinted(generatedBill._id).catch(console.error);
+        showSuccess('Printing...');
+      } catch (error) {
+        showError('Failed to print');
       }
     }
   };
 
-  const handleSharePDF = async () => {
+  // Download as text (for raw thermal printing)
+  const handleDownloadText = () => {
+    if (generatedBill) {
+      const success = downloadReceiptText(generatedBill, getRestaurantInfo());
+      if (success) {
+        showSuccess('Receipt downloaded');
+      } else {
+        showError('Failed to download');
+      }
+    }
+  };
+
+  // Share invoice
+  const handleShare = async () => {
     if (generatedBill) {
       try {
         const shared = await shareInvoicePDF(generatedBill, getRestaurantInfo());
         if (shared) {
-          showSuccess('Invoice shared successfully');
-        } else {
-          showSuccess('Invoice downloaded (sharing not supported)');
+          showSuccess('Invoice shared');
         }
       } catch (error) {
-        showError('Failed to share invoice');
+        showError('Failed to share');
       }
     }
   };
@@ -104,11 +120,19 @@ const Billing = () => {
     showSuccess('Ready for new bill');
   };
 
+  // Auto-print option
+  const handlePrintAndNew = async () => {
+    await handleDirectPrint();
+    setTimeout(() => {
+      handleNewBill();
+    }, 500);
+  };
+
   const taxRate = settings?.taxSettings?.enableTax ? settings.taxSettings.taxRate : 0;
 
   return (
     <div className="flex flex-col" style={{ height: 'calc(100vh - 100px)' }}>
-      {/* Header - Fixed */}
+      {/* Header */}
       <div className="flex-shrink-0 flex items-center justify-between mb-3">
         <div>
           <h1 className="text-xl font-bold text-white">Billing (POS)</h1>
@@ -126,7 +150,7 @@ const Billing = () => {
         )}
       </div>
 
-      {/* POS Layout - Takes remaining space */}
+      {/* POS Layout */}
       <div className="flex-1 overflow-hidden">
         <POSLayout
           onGenerateBill={handleGenerateBill}
@@ -145,7 +169,7 @@ const Billing = () => {
             <span>Bill Generated Successfully</span>
           </div>
         }
-        size="lg"
+        size="md"
       >
         <div className="space-y-4">
           {/* Bill Number */}
@@ -154,43 +178,61 @@ const Billing = () => {
             <p className="text-xl font-bold text-green-500">{generatedBill?.billNumber}</p>
           </div>
 
-          {/* Invoice Preview */}
+          {/* Thermal Invoice Preview */}
           <div 
-            className="bg-white rounded-lg overflow-y-auto"
+            className="bg-white rounded-lg overflow-y-auto flex justify-center p-4"
             style={{ maxHeight: '50vh' }}
           >
-            <InvoicePrint
+            <ThermalInvoice
               ref={invoiceRef}
               bill={generatedBill}
               restaurant={getRestaurantInfo()}
             />
           </div>
 
-          {/* Actions */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {/* Quick Actions */}
+          <div className="grid grid-cols-2 gap-3">
+            <Button 
+              variant="primary"
+              onClick={handlePrintAndNew}
+              leftIcon={<Printer className="w-4 h-4" />}
+              className="col-span-2"
+            >
+              Print & New Bill
+            </Button>
+          </div>
+
+          {/* Other Actions */}
+          <div className="grid grid-cols-4 gap-2">
             <Button 
               variant="outline" 
+              size="sm"
               onClick={handlePrint}
-              leftIcon={<Printer className="w-4 h-4" />}
+              leftIcon={<Printer className="w-3 h-3" />}
             >
               Print
             </Button>
             <Button 
               variant="outline" 
-              onClick={handleDownloadPDF}
-              leftIcon={<Download className="w-4 h-4" />}
+              size="sm"
+              onClick={handleDownloadText}
+              leftIcon={<Download className="w-3 h-3" />}
             >
-              Download
+              Text
             </Button>
             <Button 
               variant="outline" 
-              onClick={handleSharePDF}
-              leftIcon={<Share2 className="w-4 h-4" />}
+              size="sm"
+              onClick={handleShare}
+              leftIcon={<Share2 className="w-3 h-3" />}
             >
               Share
             </Button>
-            <Button onClick={handleNewBill}>
-              New Bill
+            <Button 
+              size="sm"
+              onClick={handleNewBill}
+            >
+              New
             </Button>
           </div>
         </div>
