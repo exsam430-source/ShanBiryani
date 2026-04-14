@@ -1,28 +1,52 @@
 // frontend/src/utils/thermalPrint.js
 
 /**
- * Thermal Printer Configuration
- * For 80mm thermal printers (SP-200U and similar)
- * Printable width: 72mm (576px at 203 DPI)
+ * Optimized for SPEED X SP-200W 80mm Thermal Printer
+ * Paper: 80mm width, 71.1mm printable area
+ * Resolution: 203 DPI
  */
 
 const THERMAL_CONFIG = {
-  width: '72mm',
-  widthPx: 576,
+  // Actual printable width for 80mm thermal (accounting for margins)
+  printableWidth: '68mm', // Safe printable area
+  paperWidth: '80mm',
+  // Increased font sizes for better readability
   fontSize: {
-    small: '8px',
-    normal: '10px',
-    medium: '11px',
-    large: '13px',
-    title: '14px'
+    small: '9px',
+    normal: '11px',
+    medium: '12px',
+    large: '15px',
+    title: '16px',
+    itemName: '13px',  // Bigger item names
+    itemPrice: '14px'  // Bigger prices
   },
-  margins: '2mm',
-  fontFamily: 'monospace, "Courier New", Courier, "Lucida Console"'
+  margins: '1mm',
+  fontFamily: '"Courier New", Courier, monospace, "Consolas"'
 };
 
-/**
- * Generate thermal receipt HTML
- */
+const formatPrice = (price) => `Rs.${(price || 0).toFixed(0)}`;
+
+const formatDate = (date) => {
+  return new Date(date).toLocaleString('en-PK', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+};
+
+const getUnitLabel = (unit, qty) => {
+  const labels = {
+    piece: qty > 1 ? 'pcs' : 'pc', kg: 'kg', gram: 'g', dozen: 'dz',
+    plate: 'plt', box: 'box', pack: 'pk', bottle: 'btl', litre: 'L',
+    half: 'half', full: 'full', small: 'S', medium: 'M', large: 'L',
+    regular: 'reg', family: 'fam', crate: 'crt', bundle: 'bdl'
+  };
+  return labels[unit] || 'pc';
+};
+
 export const generateThermalHTML = (bill, restaurant) => {
   if (!bill) return '';
 
@@ -30,35 +54,12 @@ export const generateThermalHTML = (bill, restaurant) => {
     ? (bill.subtotal * bill.discount) / 100
     : bill.discountAmount || bill.discount || 0;
 
-  const formatPrice = (price) => `Rs.${(price || 0).toFixed(0)}`;
-  
-  const formatDate = (date) => {
-    return new Date(date).toLocaleString('en-PK', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  };
-
-  const getUnitLabel = (unit, qty) => {
-    const labels = {
-      piece: qty > 1 ? 'pcs' : 'pc', kg: 'kg', gram: 'g', dozen: 'dz',
-      plate: 'plt', box: 'box', pack: 'pk', bottle: 'btl', litre: 'L',
-      half: 'half', full: 'full', small: 'S', medium: 'M', large: 'L',
-      regular: 'reg', family: 'fam', crate: 'crt', bundle: 'bdl'
-    };
-    return labels[unit] || 'pc';
-  };
-
   const itemsHTML = bill.items?.map(item => `
     <div class="item">
-      <div class="item-name">${item.name}${item.notes ? '*' : ''}</div>
+      <div class="item-name">${item.name}${item.notes ? ' *' : ''}</div>
       <div class="item-details">
-        <span>${item.quantity} ${getUnitLabel(item.unit, item.quantity)} x ${item.price?.toFixed(0)}</span>
-        <span class="item-total">${(item.subtotal || item.price * item.quantity)?.toFixed(0)}</span>
+        <span class="qty-price">${item.quantity} ${getUnitLabel(item.unit, item.quantity)} x Rs.${item.price?.toFixed(0)}</span>
+        <span class="item-total">Rs.${(item.subtotal || item.price * item.quantity)?.toFixed(0)}</span>
       </div>
       ${item.notes ? `<div class="item-note">• ${item.notes}</div>` : ''}
     </div>
@@ -72,9 +73,18 @@ export const generateThermalHTML = (bill, restaurant) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Receipt - ${bill.billNumber}</title>
   <style>
+    /* Critical: Proper page setup for 80mm thermal printer */
     @page {
-      size: 72mm auto;
+      size: 80mm auto;
       margin: 0;
+    }
+    
+    @media print {
+      html, body {
+        width: 80mm;
+        margin: 0;
+        padding: 0;
+      }
     }
     
     * {
@@ -84,171 +94,215 @@ export const generateThermalHTML = (bill, restaurant) => {
     }
     
     body {
-      width: 72mm;
-      max-width: 72mm;
+      width: ${THERMAL_CONFIG.printableWidth};
+      max-width: ${THERMAL_CONFIG.printableWidth};
       margin: 0 auto;
-      padding: 2mm;
+      padding: ${THERMAL_CONFIG.margins} 3mm;
       font-family: ${THERMAL_CONFIG.fontFamily};
-      font-size: ${THERMAL_CONFIG.fontSize.medium};
-      line-height: 1.3;
+      font-size: ${THERMAL_CONFIG.fontSize.normal};
+      line-height: 1.4;
       color: #000;
       background: #fff;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
     
+    /* Header */
     .header {
       text-align: center;
       border-bottom: 1px dashed #000;
-      padding-bottom: 2mm;
-      margin-bottom: 2mm;
+      padding-bottom: 3mm;
+      margin-bottom: 3mm;
     }
     
     .restaurant-name {
       font-size: ${THERMAL_CONFIG.fontSize.title};
       font-weight: bold;
-      margin-bottom: 1mm;
+      margin-bottom: 1.5mm;
+      letter-spacing: 0.5px;
     }
     
     .restaurant-info {
       font-size: ${THERMAL_CONFIG.fontSize.small};
+      line-height: 1.3;
     }
     
+    /* Invoice Info */
     .invoice-info {
       text-align: center;
-      padding: 2mm 0;
+      padding: 2.5mm 0;
       border-bottom: 1px dashed #000;
-      margin-bottom: 2mm;
+      margin-bottom: 3mm;
     }
     
     .invoice-title {
       font-size: ${THERMAL_CONFIG.fontSize.large};
       font-weight: bold;
+      margin-bottom: 1mm;
     }
     
     .invoice-number {
-      font-size: ${THERMAL_CONFIG.fontSize.normal};
+      font-size: ${THERMAL_CONFIG.fontSize.medium};
+      font-weight: bold;
     }
     
     .invoice-date {
       font-size: ${THERMAL_CONFIG.fontSize.small};
+      margin-top: 0.5mm;
     }
     
+    /* Customer Info */
     .customer-info {
       font-size: ${THERMAL_CONFIG.fontSize.normal};
-      padding-bottom: 2mm;
-      margin-bottom: 2mm;
+      padding-bottom: 2.5mm;
+      margin-bottom: 2.5mm;
       border-bottom: 1px dashed #000;
+      line-height: 1.5;
     }
     
+    /* Items Header */
     .items-header {
       display: flex;
       justify-content: space-between;
       font-weight: bold;
-      font-size: ${THERMAL_CONFIG.fontSize.normal};
+      font-size: ${THERMAL_CONFIG.fontSize.medium};
       border-bottom: 1px solid #000;
-      padding-bottom: 1mm;
-      margin-bottom: 1mm;
+      padding-bottom: 1.5mm;
+      margin-bottom: 2mm;
     }
     
+    /* Items - BIGGER FONTS */
     .item {
-      margin-bottom: 2mm;
-      font-size: ${THERMAL_CONFIG.fontSize.normal};
+      margin-bottom: 3mm;
+      border-bottom: 1px dotted #ccc;
+      padding-bottom: 2mm;
+    }
+    
+    .item:last-child {
+      border-bottom: none;
     }
     
     .item-name {
       font-weight: bold;
+      font-size: ${THERMAL_CONFIG.fontSize.itemName};
+      margin-bottom: 1mm;
+      line-height: 1.3;
     }
     
     .item-details {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding-left: 2mm;
-      font-size: ${THERMAL_CONFIG.fontSize.small};
+      font-size: ${THERMAL_CONFIG.fontSize.normal};
+    }
+    
+    .qty-price {
       color: #333;
+      font-size: ${THERMAL_CONFIG.fontSize.normal};
     }
     
     .item-total {
       font-weight: bold;
+      font-size: ${THERMAL_CONFIG.fontSize.itemPrice};
     }
     
     .item-note {
       font-size: ${THERMAL_CONFIG.fontSize.small};
       color: #666;
-      padding-left: 2mm;
+      padding-left: 4mm;
+      margin-top: 1mm;
       font-style: italic;
     }
     
+    /* Divider */
     .divider {
       border-top: 1px dashed #000;
-      margin: 2mm 0;
+      margin: 3mm 0;
     }
     
+    /* Totals */
     .totals {
-      margin-top: 2mm;
+      margin-top: 3mm;
     }
     
     .total-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 1mm;
-      font-size: ${THERMAL_CONFIG.fontSize.normal};
+      margin-bottom: 1.5mm;
+      font-size: ${THERMAL_CONFIG.fontSize.medium};
+      line-height: 1.4;
     }
     
+    .total-row.discount {
+      color: #000;
+      font-weight: 500;
+    }
+    
+    /* Grand Total - BIGGER */
     .grand-total {
       display: flex;
       justify-content: space-between;
       font-size: ${THERMAL_CONFIG.fontSize.large};
       font-weight: bold;
-      border-top: 1px solid #000;
-      border-bottom: 1px solid #000;
-      padding: 2mm 0;
-      margin: 2mm 0;
+      border-top: 2px solid #000;
+      border-bottom: 2px solid #000;
+      padding: 3mm 0;
+      margin: 3mm 0;
     }
     
+    /* Payment Info */
     .payment-info {
-      font-size: ${THERMAL_CONFIG.fontSize.normal};
-      margin-top: 2mm;
-      padding-top: 2mm;
+      font-size: ${THERMAL_CONFIG.fontSize.medium};
+      margin-top: 3mm;
+      padding-top: 3mm;
       border-top: 1px dashed #000;
     }
     
     .payment-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 1mm;
+      margin-bottom: 1.5mm;
+      line-height: 1.4;
     }
     
+    .payment-row .value {
+      font-weight: bold;
+    }
+    
+    /* Footer */
     .footer {
       text-align: center;
-      margin-top: 3mm;
-      padding-top: 2mm;
+      margin-top: 4mm;
+      padding-top: 3mm;
       border-top: 1px dashed #000;
     }
     
     .footer-text {
       font-weight: bold;
-      font-size: ${THERMAL_CONFIG.fontSize.normal};
-      margin-bottom: 1mm;
+      font-size: ${THERMAL_CONFIG.fontSize.medium};
+      margin-bottom: 2mm;
     }
     
     .small-text {
       font-size: ${THERMAL_CONFIG.fontSize.small};
       color: #666;
-    }
-    
-    .discount {
-      color: #000;
+      margin-top: 1mm;
     }
     
     .capitalize {
       text-transform: capitalize;
     }
 
+    /* Print-specific adjustments */
     @media print {
       body {
-        width: 72mm;
-        max-width: 72mm;
+        width: 80mm !important;
+        max-width: 80mm !important;
+      }
+      
+      .no-print {
+        display: none !important;
       }
     }
   </style>
@@ -271,17 +325,17 @@ export const generateThermalHTML = (bill, restaurant) => {
   <!-- Customer Info -->
   ${(bill.customerName || bill.tableNumber || bill.customerPhone) ? `
     <div class="customer-info">
-      ${bill.customerName ? `<div>Customer: ${bill.customerName}</div>` : ''}
+      ${bill.customerName ? `<div>Customer: <strong>${bill.customerName}</strong></div>` : ''}
       ${bill.customerPhone ? `<div>Phone: ${bill.customerPhone}</div>` : ''}
-      ${bill.tableNumber ? `<div>Table: ${bill.tableNumber}</div>` : ''}
-      <div>Type: ${(bill.billType || 'counter').toUpperCase()}</div>
+      ${bill.tableNumber ? `<div>Table: <strong>${bill.tableNumber}</strong></div>` : ''}
+      <div>Type: <strong>${(bill.billType || 'counter').toUpperCase()}</strong></div>
     </div>
   ` : ''}
   
   <!-- Items Header -->
   <div class="items-header">
     <span>Item</span>
-    <span>Amt</span>
+    <span>Amount</span>
   </div>
   
   <!-- Items -->
@@ -293,18 +347,18 @@ export const generateThermalHTML = (bill, restaurant) => {
   <div class="totals">
     <div class="total-row">
       <span>Subtotal:</span>
-      <span>${formatPrice(bill.subtotal)}</span>
+      <span><strong>${formatPrice(bill.subtotal)}</strong></span>
     </div>
     ${discountAmount > 0 ? `
       <div class="total-row discount">
         <span>Discount${bill.discountType === 'percentage' ? ` (${bill.discount}%)` : ''}:</span>
-        <span>-${formatPrice(discountAmount)}</span>
+        <span><strong>-${formatPrice(discountAmount)}</strong></span>
       </div>
     ` : ''}
     ${bill.taxAmount > 0 ? `
       <div class="total-row">
         <span>Tax (${bill.taxRate}%):</span>
-        <span>${formatPrice(bill.taxAmount)}</span>
+        <span><strong>${formatPrice(bill.taxAmount)}</strong></span>
       </div>
     ` : ''}
   </div>
@@ -319,21 +373,21 @@ export const generateThermalHTML = (bill, restaurant) => {
   <div class="payment-info">
     <div class="payment-row">
       <span>Payment:</span>
-      <span class="capitalize">${bill.paymentMethod || 'Cash'}</span>
+      <span class="value capitalize">${bill.paymentMethod || 'Cash'}</span>
     </div>
     <div class="payment-row">
       <span>Status:</span>
-      <span class="capitalize" style="font-weight:bold">${bill.paymentStatus || 'Paid'}</span>
+      <span class="value capitalize">${bill.paymentStatus || 'Paid'}</span>
     </div>
     ${bill.amountPaid > 0 ? `
       <div class="payment-row">
         <span>Received:</span>
-        <span>${formatPrice(bill.amountPaid)}</span>
+        <span class="value">${formatPrice(bill.amountPaid)}</span>
       </div>
       ${bill.changeAmount > 0 ? `
         <div class="payment-row">
           <span>Change:</span>
-          <span>${formatPrice(bill.changeAmount)}</span>
+          <span class="value">${formatPrice(bill.changeAmount)}</span>
         </div>
       ` : ''}
     ` : ''}
@@ -343,14 +397,22 @@ export const generateThermalHTML = (bill, restaurant) => {
   <div class="footer">
     <div class="footer-text">${restaurant?.footerText || 'Thank you!'}</div>
     <div class="small-text">Please Come Again</div>
-    ${bill.createdBy?.name ? `<div class="small-text" style="margin-top:1mm">Served by: ${bill.createdBy.name}</div>` : ''}
+    ${bill.createdBy?.name ? `<div class="small-text">Served by: ${bill.createdBy.name}</div>` : ''}
   </div>
   
   <script>
+    // Auto-print after load
     window.onload = function() {
       setTimeout(function() {
         window.print();
-      }, 200);
+      }, 250);
+    };
+    
+    // Close after print
+    window.onafterprint = function() {
+      setTimeout(function() {
+        window.close();
+      }, 100);
     };
   </script>
 </body>
@@ -358,9 +420,6 @@ export const generateThermalHTML = (bill, restaurant) => {
   `;
 };
 
-/**
- * Open thermal print window
- */
 export const openThermalPrint = (bill, restaurant) => {
   try {
     const html = generateThermalHTML(bill, restaurant);
@@ -382,9 +441,6 @@ export const openThermalPrint = (bill, restaurant) => {
   }
 };
 
-/**
- * Direct print without preview (for thermal printers)
- */
 export const printThermalDirect = (bill, restaurant) => {
   return new Promise((resolve) => {
     const iframe = document.createElement('iframe');
@@ -399,15 +455,7 @@ export const printThermalDirect = (bill, restaurant) => {
     const html = generateThermalHTML(bill, restaurant);
     
     iframe.contentDocument.open();
-    iframe.contentDocument.write(html.replace(
-      'window.print();',
-      `
-        window.print();
-        window.onafterprint = function() {
-          window.parent.postMessage('printComplete', '*');
-        };
-      `
-    ));
+    iframe.contentDocument.write(html);
     iframe.contentDocument.close();
     
     const handleMessage = (event) => {
@@ -420,7 +468,6 @@ export const printThermalDirect = (bill, restaurant) => {
     
     window.addEventListener('message', handleMessage);
     
-    // Fallback cleanup after 30 seconds
     setTimeout(() => {
       if (document.body.contains(iframe)) {
         document.body.removeChild(iframe);
@@ -431,56 +478,46 @@ export const printThermalDirect = (bill, restaurant) => {
   });
 };
 
-/**
- * Download receipt as text file (for thermal printers that support text)
- */
 export const downloadReceiptText = (bill, restaurant) => {
-  const line = ''.padStart(32, '-');
-  const doubleLine = ''.padStart(32, '=');
+  const WIDTH = 32;
+  const line = '='.repeat(WIDTH);
+  const dashLine = '-'.repeat(WIDTH);
   
-  const center = (text, width = 32) => {
-    const padding = Math.floor((width - text.length) / 2);
-    return ''.padStart(padding) + text;
+  const center = (text) => {
+    const padding = Math.floor((WIDTH - text.length) / 2);
+    return ' '.repeat(Math.max(0, padding)) + text;
   };
   
-  const leftRight = (left, right, width = 32) => {
-    const space = width - left.length - right.length;
-    return left + ''.padStart(space) + right;
+  const leftRight = (left, right) => {
+    const space = WIDTH - left.length - right.length;
+    return left + ' '.repeat(Math.max(1, space)) + right;
   };
   
-  const formatPrice = (price) => `Rs.${(price || 0).toFixed(0)}`;
-  
-  let receipt = '';
-  
-  // Header
+  let receipt = '\n';
   receipt += center(restaurant?.name || 'Shan Biryani') + '\n';
   if (restaurant?.address) receipt += center(restaurant.address) + '\n';
   if (restaurant?.phone) receipt += center(`Tel: ${restaurant.phone}`) + '\n';
   receipt += line + '\n';
-  
-  // Invoice info
   receipt += center('INVOICE') + '\n';
   receipt += center(`#${bill.billNumber}`) + '\n';
-  receipt += center(new Date(bill.createdAt).toLocaleString()) + '\n';
+  receipt += center(formatDate(bill.createdAt)) + '\n';
   receipt += line + '\n';
   
-  // Customer
-  if (bill.customerName) receipt += `Customer: ${bill.customerName}\n`;
-  if (bill.tableNumber) receipt += `Table: ${bill.tableNumber}\n`;
-  if (bill.customerName || bill.tableNumber) receipt += line + '\n';
+  if (bill.customerName || bill.tableNumber) {
+    if (bill.customerName) receipt += `Customer: ${bill.customerName}\n`;
+    if (bill.tableNumber) receipt += `Table: ${bill.tableNumber}\n`;
+    receipt += dashLine + '\n';
+  }
   
-  // Items
   bill.items?.forEach(item => {
     receipt += `${item.name}\n`;
     receipt += leftRight(
-      `  ${item.quantity}x${item.price}`,
+      ` ${item.quantity}x${item.price}`,
       `${(item.subtotal || item.price * item.quantity).toFixed(0)}`
     ) + '\n';
   });
   
   receipt += line + '\n';
-  
-  // Totals
   receipt += leftRight('Subtotal:', formatPrice(bill.subtotal)) + '\n';
   
   if (bill.discountAmount > 0) {
@@ -491,13 +528,10 @@ export const downloadReceiptText = (bill, restaurant) => {
     receipt += leftRight(`Tax(${bill.taxRate}%):`, formatPrice(bill.taxAmount)) + '\n';
   }
   
-  receipt += doubleLine + '\n';
+  receipt += line + '\n';
   receipt += leftRight('TOTAL:', formatPrice(bill.grandTotal)) + '\n';
-  receipt += doubleLine + '\n';
-  
-  // Payment
-  receipt += leftRight('Payment:', bill.paymentMethod?.toUpperCase() || 'CASH') + '\n';
-  receipt += leftRight('Status:', bill.paymentStatus?.toUpperCase() || 'PAID') + '\n';
+  receipt += line + '\n';
+  receipt += leftRight('Payment:', (bill.paymentMethod || 'CASH').toUpperCase()) + '\n';
   
   if (bill.amountPaid > 0) {
     receipt += leftRight('Received:', formatPrice(bill.amountPaid)) + '\n';
@@ -506,15 +540,12 @@ export const downloadReceiptText = (bill, restaurant) => {
     }
   }
   
-  receipt += line + '\n';
-  
-  // Footer
+  receipt += dashLine + '\n';
   receipt += center(restaurant?.footerText || 'Thank you!') + '\n';
   receipt += center('Please Come Again') + '\n';
-  receipt += '\n\n\n'; // Feed for cutting
+  receipt += '\n\n\n';
   
-  // Download
-  const blob = new Blob([receipt], { type: 'text/plain' });
+  const blob = new Blob([receipt], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
