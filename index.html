@@ -2,20 +2,450 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="src/App.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Shan Biryani - Where Every Grain Tells a Story. Premium Pakistani Restaurant serving authentic Biryani, Karahi, BBQ and more." />
-    <meta name="keywords" content="biryani, karahi, pakistani food, restaurant, delivery, bbq" />
-    <meta name="author" content="Shan Biryani" />
+    
+    <!-- ============================================
+         PRIMARY META TAGS
+         ============================================ -->
+    <title>Shan Biryani - Where Every Grain Tells a Story | Premium Pakistani Restaurant</title>
+    <meta name="title" content="Shan Biryani - Where Every Grain Tells a Story | Premium Pakistani Restaurant" />
+    <meta name="description" content="Experience authentic Pakistani flavors at Shan Biryani. Premium Biryani, Karahi, BBQ, and more. Order online or visit us today. Fresh ingredients, traditional recipes, unforgettable taste." />
+    <meta name="keywords" content="shan biryani, biryani, karahi, pakistani food, pakistani restaurant, bbq, authentic biryani, online food order, desi food, chicken biryani, beef karahi, naan, food delivery" />
+    <meta name="author" content="Shan Biryani Restaurant" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    
+    <!-- ============================================
+         FAVICONS & ICONS
+         ============================================ -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- Theme Colors -->
     <meta name="theme-color" content="#DC2626" />
-    <title>Shan Biryani - Premium Pakistani Restaurant</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="msapplication-TileColor" content="#DC2626" />
+    <meta name="msapplication-TileImage" content="/android-chrome-192x192.png" />
+    
+    <!-- ============================================
+         OPEN GRAPH / FACEBOOK
+         ============================================ -->
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:url" content="https://shanbiryani.com/" />
+    <meta property="og:title" content="Shan Biryani - Where Every Grain Tells a Story" />
+    <meta property="og:description" content="Experience authentic Pakistani flavors. Premium Biryani, Karahi, BBQ and more. Fresh ingredients, traditional recipes, unforgettable taste." />
+    <meta property="og:image" content="https://shanbiryani.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Shan Biryani" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- ============================================
+         TWITTER CARD
+         ============================================ -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://shanbiryani.com/" />
+    <meta name="twitter:title" content="Shan Biryani - Where Every Grain Tells a Story" />
+    <meta name="twitter:description" content="Experience authentic Pakistani flavors. Premium Biryani, Karahi, BBQ and more." />
+    <meta name="twitter:image" content="https://shanbiryani.com/og-image.jpg" />
+    <meta name="twitter:creator" content="@shanbiryani" />
+    
+    <!-- ============================================
+         ADDITIONAL SEO
+         ============================================ -->
+    <link rel="canonical" href="https://shanbiryani.com/" />
+    
+    <!-- ============================================
+         PERFORMANCE
+         ============================================ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- ============================================
+         STRUCTURED DATA (Schema.org)
+         ============================================ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Shan Biryani",
+      "alternateName": "Shan Biryani Restaurant",
+      "url": "https://shanbiryani.com",
+      "logo": "https://shanbiryani.com/android-chrome-512x512.png",
+      "image": "https://shanbiryani.com/og-image.jpg",
+      "description": "Premium Pakistani Restaurant serving authentic Biryani, Karahi, BBQ and more. Where Every Grain Tells a Story.",
+      "priceRange": "$$",
+      "servesCuisine": ["Pakistani", "South Asian", "Desi"],
+      "hasMenu": "https://shanbiryani.com/menu",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Your Street Address",
+        "addressLocality": "Your City",
+        "addressRegion": "Your State",
+        "postalCode": "00000",
+        "addressCountry": "PK"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "0.0000",
+        "longitude": "0.0000"
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+          "opens": "11:00",
+          "closes": "23:00"
+        }
+      ],
+      "sameAs": [
+        "https://facebook.com/shanbiryani",
+        "https://instagram.com/shanbiryani",
+        "https://twitter.com/shanbiryani"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Service",
+        "telephone": "+1-000-000-0000"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "500"
+      }
+    }
+    </script>
+    
+    <!-- ============================================
+         APPLE WEB APP
+         ============================================ -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Shan Biryani" />
+    
+    <!-- ============================================
+         MICROSOFT
+         ============================================ -->
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    
+    <!-- ============================================
+         PERFORMANCE & SECURITY
+         ============================================ -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- ============================================
+         LOADING SCREEN STYLES (inline for instant render)
+         ============================================ -->
+    <style>
+      /* ── Reset ── */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      /* ── Loading Screen ── */
+      #app-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: #0a0a0a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+      }
+
+      #app-loader.fade-out {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      /* ── Steam Animation ── */
+      .loader-steam {
+        display: flex;
+        gap: 6px;
+        margin-bottom: -10px;
+      }
+
+      .steam-line {
+        width: 4px;
+        height: 24px;
+        background: linear-gradient(to top, transparent, #DC2626aa, transparent);
+        border-radius: 4px;
+        animation: steamRise 1.4s ease-in-out infinite;
+      }
+
+      .steam-line:nth-child(2) { animation-delay: 0.2s; height: 32px; }
+      .steam-line:nth-child(3) { animation-delay: 0.4s; }
+
+      @keyframes steamRise {
+        0%   { transform: translateY(0) scaleY(1);   opacity: 0; }
+        30%  { opacity: 1; }
+        100% { transform: translateY(-20px) scaleY(1.3); opacity: 0; }
+      }
+
+      /* ── Bowl / Logo Icon ── */
+      .loader-icon {
+        width: 90px;
+        height: 90px;
+        position: relative;
+        animation: gentlePulse 2s ease-in-out infinite;
+      }
+
+      .loader-icon svg {
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 0 20px #DC262660);
+      }
+
+      @keyframes gentlePulse {
+        0%, 100% { transform: scale(1); }
+        50%       { transform: scale(1.06); }
+      }
+
+      /* ── Brand Name ── */
+      .loader-brand {
+        text-align: center;
+      }
+
+      .loader-brand h1 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: clamp(28px, 6vw, 42px);
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: 2px;
+        line-height: 1;
+      }
+
+      .loader-brand h1 span {
+        color: #DC2626;
+      }
+
+      .loader-brand p {
+        font-family: 'Poppins', Arial, sans-serif;
+        font-size: clamp(11px, 2.5vw, 13px);
+        color: #9ca3af;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-top: 6px;
+      }
+
+      /* ── Progress Bar ── */
+      .loader-progress-wrap {
+        width: min(280px, 80vw);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .loader-progress-bar {
+        width: 100%;
+        height: 3px;
+        background: #1f1f1f;
+        border-radius: 99px;
+        overflow: hidden;
+      }
+
+      .loader-progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #DC2626, #f97316, #DC2626);
+        background-size: 200% 100%;
+        border-radius: 99px;
+        animation: progressLoad 2.2s ease forwards, shimmer 1.5s linear infinite;
+      }
+
+      @keyframes progressLoad {
+        0%   { width: 0%; }
+        60%  { width: 75%; }
+        90%  { width: 92%; }
+        100% { width: 100%; }
+      }
+
+      @keyframes shimmer {
+        0%   { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+
+      .loader-status {
+        font-family: 'Poppins', Arial, sans-serif;
+        font-size: 11px;
+        color: #4b5563;
+        text-align: center;
+        letter-spacing: 1px;
+        animation: textCycle 2.2s ease forwards;
+      }
+
+      @keyframes textCycle {
+        0%   { opacity: 1; }
+        50%  { opacity: 0.5; }
+        100% { opacity: 1; }
+      }
+
+      /* ── Decorative Spice Dots ── */
+      .loader-spices {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .spice-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #DC2626;
+        animation: spicePop 1.2s ease-in-out infinite;
+      }
+
+      .spice-dot:nth-child(1) { animation-delay: 0s;    background: #DC2626; }
+      .spice-dot:nth-child(2) { animation-delay: 0.15s; background: #f97316; width: 8px; height: 8px; }
+      .spice-dot:nth-child(3) { animation-delay: 0.3s;  background: #eab308; }
+      .spice-dot:nth-child(4) { animation-delay: 0.45s; background: #f97316; width: 8px; height: 8px; }
+      .spice-dot:nth-child(5) { animation-delay: 0.6s;  background: #DC2626; }
+
+      @keyframes spicePop {
+        0%, 100% { transform: translateY(0);   opacity: 0.4; }
+        50%       { transform: translateY(-5px); opacity: 1; }
+      }
+
+      /* ── Hide body scroll while loading ── */
+      body.loading { overflow: hidden; }
+    </style>
   </head>
-  <body>
+
+  <body class="loading">
+
+    <!-- ============================================
+         NO-SCRIPT FALLBACK
+         ============================================ -->
+    <noscript>
+      <div style="padding:40px;text-align:center;font-family:Arial,sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <h1 style="color:#DC2626;font-size:2rem;margin-bottom:12px;">Shan Biryani</h1>
+        <p style="color:#9ca3af;">Please enable JavaScript in your browser to enjoy the full Shan Biryani experience.</p>
+      </div>
+    </noscript>
+
+    <!-- ============================================
+         LOADING SCREEN
+         ============================================ -->
+    <div id="app-loader" role="status" aria-label="Loading Shan Biryani">
+
+      <!-- Steam -->
+      <div class="loader-steam" aria-hidden="true">
+        <div class="steam-line"></div>
+        <div class="steam-line"></div>
+        <div class="steam-line"></div>
+      </div>
+
+      <!-- Bowl Icon (inline SVG - no external dependency) -->
+      <div class="loader-icon" aria-hidden="true">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Bowl base -->
+          <ellipse cx="50" cy="62" rx="38" ry="14" fill="#DC2626" opacity="0.15"/>
+          <!-- Bowl body -->
+          <path d="M14 48 Q14 80 50 80 Q86 80 86 48 Z" fill="#1a1a1a" stroke="#DC2626" stroke-width="2"/>
+          <!-- Rice grains inside -->
+          <ellipse cx="38" cy="58" rx="5" ry="2.5" fill="#f5f0e8" opacity="0.9" transform="rotate(-20,38,58)"/>
+          <ellipse cx="50" cy="54" rx="5" ry="2.5" fill="#f5f0e8" opacity="0.9" transform="rotate(10,50,54)"/>
+          <ellipse cx="62" cy="58" rx="5" ry="2.5" fill="#f5f0e8" opacity="0.9" transform="rotate(-15,62,58)"/>
+          <ellipse cx="44" cy="65" rx="4" ry="2"   fill="#f5f0e8" opacity="0.7" transform="rotate(5,44,65)"/>
+          <ellipse cx="56" cy="65" rx="4" ry="2"   fill="#f5f0e8" opacity="0.7" transform="rotate(-10,56,65)"/>
+          <!-- Spice top -->
+          <circle cx="50" cy="50" r="4" fill="#DC2626"/>
+          <circle cx="38" cy="52" r="2.5" fill="#f97316"/>
+          <circle cx="62" cy="52" r="2.5" fill="#f97316"/>
+          <!-- Rim -->
+          <ellipse cx="50" cy="48" rx="36" ry="5" fill="#DC2626" opacity="0.8"/>
+          <ellipse cx="50" cy="48" rx="36" ry="5" fill="none" stroke="#ff4444" stroke-width="1"/>
+          <!-- Star garnish -->
+          <polygon points="50,38 51.5,43 56,43 52.5,46 54,51 50,48 46,51 47.5,46 44,43 48.5,43" 
+                   fill="#eab308" opacity="0.9"/>
+        </svg>
+      </div>
+
+      <!-- Brand -->
+      <div class="loader-brand">
+        <h1>Shan <span>Biryani</span></h1>
+        <p>Where Every Grain Tells a Story</p>
+      </div>
+
+      <!-- Spice dots -->
+      <div class="loader-spices" aria-hidden="true">
+        <div class="spice-dot"></div>
+        <div class="spice-dot"></div>
+        <div class="spice-dot"></div>
+        <div class="spice-dot"></div>
+        <div class="spice-dot"></div>
+      </div>
+
+      <!-- Progress -->
+      <div class="loader-progress-wrap">
+        <div class="loader-progress-bar">
+          <div class="loader-progress-fill"></div>
+        </div>
+        <p class="loader-status" id="loader-status-text">Preparing your experience...</p>
+      </div>
+
+    </div>
+    <!-- END LOADING SCREEN -->
+
+    <!-- React Root -->
     <div id="root"></div>
+
+    <!-- ============================================
+         LOADER SCRIPT
+         ============================================ -->
+    <script>
+      (function () {
+        const loader = document.getElementById('app-loader');
+        const statusText = document.getElementById('loader-status-text');
+
+        const messages = [
+          'Preparing your experience...',
+          'Heating the spices...',
+          'Layering the rice...',
+          'Almost ready to serve...',
+          'Welcome to Shan Biryani!'
+        ];
+
+        let msgIndex = 0;
+        const interval = setInterval(function () {
+          msgIndex = (msgIndex + 1) % messages.length;
+          if (statusText) statusText.textContent = messages[msgIndex];
+        }, 500);
+
+        function hideLoader() {
+          clearInterval(interval);
+          if (statusText) statusText.textContent = 'Welcome to Shan Biryani!';
+          setTimeout(function () {
+            if (loader) {
+              loader.classList.add('fade-out');
+              document.body.classList.remove('loading');
+              setTimeout(function () {
+                loader.style.display = 'none';
+              }, 650);
+            }
+          }, 300);
+        }
+
+        // Hide after React mounts OR after max 4s — whichever first
+        window.__shanBiryaniLoaderDone = hideLoader;
+
+        // Safety fallback
+        setTimeout(hideLoader, 4000);
+      })();
+    </script>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
